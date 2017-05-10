@@ -5,17 +5,13 @@ import png
 import struct
 
 
-def get_arguments():
+def get_pal():
     if len(sys.argv) < 2:
         print("No SHP file specified.")
         sys.exit(-1)
     filename = sys.argv[1]
     palette = None
-    if not os.path.isfile(filename):
-        print("Not a valid file \"{}\".".format(filename))
-        sys.exit(-1)
         
-
     if len(sys.argv) == 3:
         palfile = sys.argv[2]
     else :
@@ -175,8 +171,17 @@ def shp_to_png(startname, dir, palette, handle, entry, total):
 
 
 def main():
-    filename, palette = get_arguments()
-    extract_shapes(filename, palette)
-
+    filename = sys.argv[1]
+    current_dir, useless = os.path.split(os.path.abspath(filename))
+    if os.path.basename(filename)[0] == '*':
+        for file in os.listdir(current_dir):
+            if file.endswith(".SHP"):
+                filename = os.path.abspath(file)
+                palette = get_pal()
+                extract_shapes(filename, palette)
+    else:
+        filename = os.path.abspath(filename)
+        palette = get_arguments()
+        extract_shapes(filename, palette)
 
 main()
