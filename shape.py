@@ -27,7 +27,7 @@ def get_pal():
         palette = read_palette(palfile)
         palfile.close()
 
-    return os.path.abspath(filename), palette
+    return palette
 
 
 def extract_shapes(filename, pal0):
@@ -180,8 +180,9 @@ def main():
                 palette = get_pal()
                 extract_shapes(filename, palette)
     else:
+        print("One file !")
         filename = os.path.abspath(filename)
-        palette = get_arguments()
+        palette = get_pal()
         extract_shapes(filename, palette)
 
 main()
