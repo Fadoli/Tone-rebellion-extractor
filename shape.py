@@ -5,17 +5,17 @@ import png
 import struct
 
 
-def get_pal():
+def get_pal(filename):
     if len(sys.argv) < 2:
         print("No SHP file specified.")
         sys.exit(-1)
-    filename = sys.argv[1]
     palette = None
-        
+
+    palfile = filename.replace(".SHP",".PAL")
+    if not os.path.isfile(palfile):
+        print(filename,"doesn't have a PAL ?")
     if len(sys.argv) == 3:
         palfile = sys.argv[2]
-    else :
-        palfile = filename.replace(".SHP",".PAL")
 
     #If we do not have any pal, just try the general one
     if not os.path.isfile(palfile):
@@ -177,12 +177,12 @@ def main():
         for file in os.listdir(current_dir):
             if file.endswith(".SHP"):
                 filename = os.path.abspath(file)
-                palette = get_pal()
+                palette = get_pal(filename)
                 extract_shapes(filename, palette)
     else:
         print("One file !")
         filename = os.path.abspath(filename)
-        palette = get_pal()
+        palette = get_pal(filename)
         extract_shapes(filename, palette)
 
 main()
