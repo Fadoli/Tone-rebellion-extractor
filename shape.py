@@ -134,11 +134,6 @@ def shp_to_png(startname, dir, palette, handle, entry, total):
             pixels.append(pad_row)
             y+=1
     while y < bottom:
-        if len(row) >= read_width:
-            row = row[:plane_width]
-            pixels.append(row)
-            row = []
-            y += 1
 
         if len(row) == 0:
             row += pad_left
@@ -147,11 +142,16 @@ def shp_to_png(startname, dir, palette, handle, entry, total):
         except Exception as e:
             print("Unable to create {} (hit EOF at {},{} of {},{}).".format(testname, len(row) >> 2, y, width, height))
             return
-
+        
+        #End of line, fill with empty and go to next line !
         if b == 0:
             #Small Workaround to avoid overflow
             if (read_width - len(row)) < plane_width:
                 row += backgroundSkipped * ((read_width - len(row))>>2)
+            row = row[:plane_width]
+            pixels.append(row)
+            row = []
+            y += 1
         elif b == 1:
             px = handle.read(1)[0]
             row += background * px
