@@ -1,0 +1,7 @@
+Liste des bugs :
+
+BR-TRG01
+S-TRAIN1
+V-SHT2FX
+
+subissent des decalage couleur

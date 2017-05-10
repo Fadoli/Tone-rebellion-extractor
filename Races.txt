@@ -1,0 +1,6 @@
+S - Jaune
+M - Bleu
+P - Rouge
+L - Vert
+
+V - Leviathan

@@ -5,18 +5,69 @@ import png
 import struct
 
 
+def Tone_Hardcode_PAL(filename):
+    useless,lclName = os.path.split(filename)
+    outFile = lclName.replace("SHP","PAL")
+    
+    #Islands I00-FEAT[TRIG].SHP -> ISLAND00.PAL
+    if ( lclName[0] == 'I' and lclName[1] != 'S' and lclName[1] != 'N' ):
+        outFile = outFile.replace("-FEAT","")
+        outFile = outFile.replace("-TRIG","")
+        outFile = outFile.replace("I","ISLAND")
+    outFile = outFile.replace("LILMAP","ISLAND")
+
+
+    if ( lclName[0] == 'N' and lclName[1] == 'G' ):
+        outFile = "NEWGAME.PAL"
+        if ( lclName[2] == 'B' ):
+            outFile = "MAINMAP.PAL"
+
+    #NEWGAME
+    outFile = outFile.replace("BIGFLOAT","NEWGAME")
+    outFile = outFile.replace("GLYPHS","NEWGAME")
+    outFile = outFile.replace("LEVIDIF","NEWGAME")
+    outFile = outFile.replace("NEWBACK","NEWGAME")
+
+    #EXTEND ?
+    outFile = outFile.replace("L-CRYTON","NEWGAME")
+    outFile = outFile.replace("L-ENRICH","NEWGAME")
+    outFile = outFile.replace("L-EXTEND","NEWGAME")
+
+    #MAP related
+    outFile = outFile.replace("END.","MAINMAP.")
+    outFile = outFile.replace("ENDGLW","MAINMAP")
+    outFile = outFile.replace("MAPBACK","MAINMAP")
+    outFile = outFile.replace("SMISLE","MAINMAP")
+
+    #END !
+    outFile = outFile.replace("ENDTEMP","ENDGAME")
+    outFile = outFile.replace("ENDTEM","ENDGAM")
+
+
+    #caca
+    outFile = outFile.replace("SMREALMS","ENDGAME")
+    outFile = outFile.replace("LIFE","ENDGAME")
+    outFile = outFile.replace("SEEK","ENDGAME")
+
+    return os.path.join(useless,outFile)
+        
+        
+    
+
 def get_pal(filename):
     if len(sys.argv) < 2:
         print("No SHP file specified.")
         sys.exit(-1)
     palette = None
 
-    palfile = filename.replace(".SHP",".PAL")
+    palfile = Tone_Hardcode_PAL(filename)
     if len(sys.argv) == 3:
         palfile = sys.argv[2]
 
+    #print(palfile)
     #If we do not have any pal, just try the general one
     if not os.path.isfile(palfile):
+        #print("Using default PAL")
         palfile = "GAME.PAL"
         
     #Load the PAL :D
@@ -35,7 +86,7 @@ def extract_shapes(filename, pal0):
             raise Exception("Invalid SHP file (bad signature).")
         image_count = struct.unpack('<I', handle.read(4))[0]
         startname = os.path.basename(filename).replace(".SHP", "") + "_"
-        if image_count == 1:
+        if image_count == 1 and False:
             dir, file_ = os.path.split(os.path.abspath(filename))
             dir = os.path.abspath(dir+'..')
         else:
@@ -44,6 +95,8 @@ def extract_shapes(filename, pal0):
             dir = os.path.join(dir, filename.replace(".SHP", ""))
             if not os.path.isdir(dir):
                 os.makedirs(dir)
+        #print("Count : ",image_count)
+        IndMax = os.path.getsize(filename)
         for i in range(image_count):
             off_dat = struct.unpack('<I', handle.read(4))[0]
             off_pal = struct.unpack('<I', handle.read(4))[0]
@@ -53,7 +106,7 @@ def extract_shapes(filename, pal0):
             if off_pal != 0:
                 handle.seek(off_pal)
                 print("Skipping ",filename," custom pal not supported !")
-                #palette = read_palette()
+                #palette = read_palette(handle)
                 return
             elif pal0 is None:
                 print("Default palette required for {}/{}; skipping...".format(i+1, image_count))
@@ -177,7 +230,7 @@ def main():
         for file in os.listdir(current_dir):
             if file.endswith(".SHP"):
                 filename = os.path.abspath(file)
-                palette = get_pal(filename)
+                palette = get_pal(file)
                 extract_shapes(filename, palette)
     else:
         print("One file !")

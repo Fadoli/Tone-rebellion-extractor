@@ -1,0 +1,47 @@
+BUL - pas utile ?
+HALL - ?
+HIT : rajout vert = transparent ?
+INCI ?
+
+
+L - BLDTON / CRYTON / ENRICH - ???? cf : P
+L-SPEC1 ??
+
+LIFE ?
+LILMAP : recalculer avec les grosses : inutiles
+
+
+M - BLDTON / CRYTON / ENRICH - ???? cf : P
+M-SPEC1/2/3 ??
+
+NGBUTTON : le moins pire ...
+PADMAP : inutile
+
+P - BLDTON : MARCHE BIEN ET CONTIENT CELUI DE TOUT LES AUTRES !!!!
+P - CRYTON : MARCHE BIEN ET CONTIENT CELUI DE TOUT LES AUTRES !!!!
+P - ENRICH : MARCHE BIEN ET CONTIENT CELUI DE TOUT LES AUTRES !!!! INUTILISER 
+P - EXTEND : MARCHE BIEN ET CONTIENT CELUI DE TOUT LES AUTRES !!!!
+
+P - MEDIC / MAGTON / PCTRN ... : Abandonné du jeu
+P - SPEC 1/2/3 : VIDE / INUTILE  4 : Utilisable
+P - SPELLTW ...
+
+PT2/3B : mauvais à corriger
+
+SEEK ? cf : LIFE
+
+SMILSE : petite ile mais rien ne marche ... cf SMISLME qui marche
+SMREALMS : cf REALMS
+
+S-SPELL 2 : inutilisé mais cool :)
+ce qui est rigolo : pas de superflu dans les S, probablement les moins travaillé et ceux fait à la fin
+
+TONEANIM ?
+
+VBLEGS : trouver le bon ? (VPRLEGS)
+VBOD_17+ > ALL
+VLEGS : trouver le bon ? cf VPCLEGS
+VMBODS : inclut dans VBOD (07/08)
+VMSRLEGS : cf VSRLEGS
+
+fin : isishit tout devrait marcher à l'exportation (ou presque)
