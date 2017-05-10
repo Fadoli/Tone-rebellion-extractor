@@ -12,8 +12,6 @@ def get_pal(filename):
     palette = None
 
     palfile = filename.replace(".SHP",".PAL")
-    if not os.path.isfile(palfile):
-        print(filename,"doesn't have a PAL ?")
     if len(sys.argv) == 3:
         palfile = sys.argv[2]
 
@@ -54,7 +52,9 @@ def extract_shapes(filename, pal0):
             palette = pal0
             if off_pal != 0:
                 handle.seek(off_pal)
-                palette = read_palette(handle)
+                print("Skipping ",filename," custom pal not supported !")
+                #palette = read_palette()
+                return
             elif pal0 is None:
                 print("Default palette required for {}/{}; skipping...".format(i+1, image_count))
                 continue
