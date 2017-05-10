@@ -1,5 +1,8 @@
 #gamefile
 tone/
+*.png
+*.shp
+*.pal
 
 # Windows image file caches
 Thumbs.db

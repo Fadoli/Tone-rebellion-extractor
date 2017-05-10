@@ -20,17 +20,13 @@ def get_arguments():
         palfile = sys.argv[2]
     else :
         palfile = filename.replace(".SHP",".PAL")
-            
-    if not not os.path.isfile(palfile):
-        palfile = open(palfile, 'rb')
-        palette = read_palette(palfile)
-        palfile.close()
 
-    if len(sys.argv) == 3:
-        palfile = sys.argv[2]
-        if not os.path.isfile(palfile):
-            print("Not a valid palette file \"{}\".".format(palfile))
-            sys.exit(-1)
+    #If we do not have any pal, just try the general one
+    if not os.path.isfile(palfile):
+        palfile = "GAME.PAL"
+        
+    #Load the PAL :D
+    if os.path.isfile(palfile):
         palfile = open(palfile, 'rb')
         palette = read_palette(palfile)
         palfile.close()
@@ -101,13 +97,13 @@ def shp_to_png(startname, dir, palette, handle, entry, total):
     x_end    = struct.unpack('<i', handle.read(4))[0]
     y_end    = struct.unpack('<i', handle.read(4))[0]
 
-    print("X [",x_start,";",x_end,"] , center at " , x_center , " size : " , width )
-    print("Y [",y_start,";",y_end,"] , center at " , y_center , " size : " , height )
+    #print("X [",x_start,";",x_end,"] , center at " , x_center , " size : " , width )
+    #print("Y [",y_start,";",y_end,"] , center at " , y_center , " size : " , height )
 
     x_RealStart = x_start + x_center;
     
     if (x_start > (width-1)) or (y_start > (height-1)):
-        print("Unable to create {} (w:{}, h:{}, x:{}, y:{}).".format(testname, width, height, x_start, y_start))
+        #print("Unable to create {} (w:{}, h:{}, x:{}, y:{}).".format(testname, width, height, x_start, y_start))
         return
 
     if ( x_RealStart < 0 ):
