@@ -5,49 +5,50 @@ import png
 import struct
 
 
-def Tone_Hardcode_PAL(filename):
+def Tone_Hardcode_pal(filename):
     useless,lclName = os.path.split(filename)
-    outFile = lclName.replace("SHP","PAL")
+    outFile = lclName.upper().replace("SHP","PAL")
+    lclName = lclName.upper()
     
-    #Islands I00-FEAT[TRIG].SHP -> ISLAND00.PAL
+    #Islands I00-FEAT[TRIG].shp -> ISLAND00.pal
     if ( lclName[0] == 'I' and lclName[1] != 'S' and lclName[1] != 'N' ):
         outFile = outFile.replace("-FEAT","")
         outFile = outFile.replace("-TRIG","")
-        outFile = outFile.replace("I","ISLAND")
-    outFile = outFile.replace("LILMAP","ISLAND")
+        outFile = outFile.replace("I","island")
+    outFile = outFile.replace("LILMAP","island")
 
 
     if ( lclName[0] == 'N' and lclName[1] == 'G' ):
-        outFile = "NEWGAME.PAL"
+        outFile = "newgame.pal"
         if ( lclName[2] == 'B' ):
-            outFile = "MAINMAP.PAL"
+            outFile = "mainmap.pal"
 
-    #NEWGAME
-    outFile = outFile.replace("BIGFLOAT","NEWGAME")
-    outFile = outFile.replace("GLYPHS","NEWGAME")
-    outFile = outFile.replace("LEVIDIF","NEWGAME")
-    outFile = outFile.replace("NEWBACK","NEWGAME")
+    #newgame
+    outFile = outFile.replace("BIGFLOAT","newgame")
+    outFile = outFile.replace("GLYPHS","newgame")
+    outFile = outFile.replace("LEVIDIF","newgame")
+    outFile = outFile.replace("NEWBACK","newgame")
 
     #EXTEND ?
-    outFile = outFile.replace("L-CRYTON","NEWGAME")
-    outFile = outFile.replace("L-ENRICH","NEWGAME")
-    outFile = outFile.replace("L-EXTEND","NEWGAME")
+    outFile = outFile.replace("L-CRYTON","newgame")
+    outFile = outFile.replace("L-ENRICH","newgame")
+    outFile = outFile.replace("L-EXTEND","newgame")
 
     #MAP related
-    outFile = outFile.replace("END.","MAINMAP.")
-    outFile = outFile.replace("ENDGLW","MAINMAP")
-    outFile = outFile.replace("MAPBACK","MAINMAP")
-    outFile = outFile.replace("SMISLE","MAINMAP")
+    outFile = outFile.replace("END.","mainmap.")
+    outFile = outFile.replace("ENDGLW","mainmap")
+    outFile = outFile.replace("MAPBACK","mainmap")
+    outFile = outFile.replace("SMISLE","mainmap")
 
     #END !
-    outFile = outFile.replace("ENDTEMP","ENDGAME")
-    outFile = outFile.replace("ENDTEM","ENDGAM")
+    outFile = outFile.replace("ENDTEMP","endgame")
+    outFile = outFile.replace("ENDTEM","endgam")
 
 
     #caca
-    outFile = outFile.replace("SMREALMS","ENDGAME")
-    outFile = outFile.replace("LIFE","ENDGAME")
-    outFile = outFile.replace("SEEK","ENDGAME")
+    outFile = outFile.replace("SMREALMS","endgame")
+    outFile = outFile.replace("LIFE","endgame")
+    outFile = outFile.replace("SEEK","endgame")
 
     return os.path.join(useless,outFile)
         
@@ -56,21 +57,21 @@ def Tone_Hardcode_PAL(filename):
 
 def get_pal(filename):
     if len(sys.argv) < 2:
-        print("No SHP file specified.")
+        print("No shp file specified.")
         sys.exit(-1)
     palette = None
 
-    palfile = Tone_Hardcode_PAL(filename)
+    palfile = Tone_Hardcode_pal(filename)
     if len(sys.argv) == 3:
         palfile = sys.argv[2]
 
     #print(palfile)
     #If we do not have any pal, just try the general one
     if not os.path.isfile(palfile):
-        #print("Using default PAL")
-        palfile = "GAME.PAL"
+        #print("Using default pal")
+        palfile = "game.pal"
         
-    #Load the PAL :D
+    #Load the pal :D
     if os.path.isfile(palfile):
         palfile = open(palfile, 'rb')
         palette = read_palette(palfile)
@@ -83,16 +84,16 @@ def extract_shapes(filename, pal0):
         handle = open(filename, 'rb')
         magic = struct.unpack('<I', handle.read(4))[0]
         if magic != 0x30312E31:
-            raise Exception("Invalid SHP file (bad signature).")
+            raise Exception("Invalid shp file (bad signature).")
         image_count = struct.unpack('<I', handle.read(4))[0]
-        startname = os.path.basename(filename).replace(".SHP", "") + "_"
+        startname = os.path.basename(filename).replace(".shp", "") + "_"
         if image_count == 1 and False:
             dir, file_ = os.path.split(os.path.abspath(filename))
             dir = os.path.abspath(dir+'..')
         else:
             dir, file_ = os.path.split(os.path.abspath(filename))
             dir = os.path.join(dir, filename.replace(".shp", ""))
-            dir = os.path.join(dir, filename.replace(".SHP", ""))
+            dir = os.path.join(dir, filename.replace(".shp", ""))
             if not os.path.isdir(dir):
                 os.makedirs(dir)
         #print("Count : ",image_count)
@@ -232,7 +233,7 @@ def main():
     current_dir, useless = os.path.split(os.path.abspath(filename))
     if os.path.basename(filename)[0] == '*':
         for file in os.listdir(current_dir):
-            if file.endswith(".SHP"):
+            if file.endswith(".shp"):
                 filename = os.path.abspath(file)
                 palette = get_pal(file)
                 extract_shapes(filename, palette)
