@@ -146,8 +146,7 @@ def shp_to_png(startname, dir, palette, handle, entry, total):
     x_end    = struct.unpack('<i', handle.read(4))[0]
     y_end    = struct.unpack('<i', handle.read(4))[0]
 
-    #print("X [",x_start,";",x_end,"] , center at " , x_center , " size : " , width )
-    #print("Y [",y_start,";",y_end,"] , center at " , y_center , " size : " , height )
+
 
     x_RealStart = x_start + x_center;
     
@@ -158,64 +157,69 @@ def shp_to_png(startname, dir, palette, handle, entry, total):
     if ( x_RealStart < 0 ):
         print("Warning using dirty workaround for ", entry)
         x_center -= x_RealStart
-
+    
     top = y_start + y_center
-    bottom = y_end + y_center
+    bottom = y_end + y_center + 1
     left = x_start + x_center
-    right = x_end + x_center
+    right = x_end + x_center + 1
+    
+    #print("ENTRY : ", entry)
+    #print("X [",left,";",right,"]" )
+    #print("Y [",top,";",bottom,"]" )
 
-    background = [0, 0, 0, 0]
+    background = [255, 0, 0, 0]
     backgroundSkipped = [0, 128, 0, 0]
     pad_row = backgroundSkipped * width
     pad_left = backgroundSkipped * left
+    pad_right = backgroundSkipped * (width - right)
 
     y = 0
     row = []
     pixels = []
 
-    # this doesn't seem right... but works
-    plane_width = width << 2
-    read_width = (right) << 2
-    if plane_width > read_width:
-        read_width = plane_width
-
+    # This is related to the fact that 1 pixel is 4 byte long
+    PerLine = (right - left) << 2;
+    
     while y < top:
-            pixels.append(pad_row)
-            y+=1
+        pixels.append(pad_row)
+        y+=1
+    row = []
     while y < bottom:
 
-        if len(row) == 0:
-            row += pad_left
-        try:
-            b = handle.read(1)[0]
-        except Exception as e:
-            print("Unable to create {} (hit EOF at {},{} of {},{}).".format(testname, len(row) >> 2, y, width, height))
-            return
+        row = []
+        x = 0
         
-        #End of line, fill with empty and go to next line !
-        if b == 0:
-            #Small Workaround to avoid overflow
-            if (read_width - len(row)) < plane_width:
-                row += backgroundSkipped * ((read_width - len(row))>>2)
-            row = row[:plane_width]
-            pixels.append(row)
-            row = []
-            y += 1
-        elif b == 1:
-            px = handle.read(1)[0]
-            row += background * px
-        elif (b & 1) == 0:
-            clr = palette[handle.read(1)[0]]
-            for i in range(b >> 1):
-                row += clr
-        else:
-            for i in range(b >> 1):
+        while ( True ):
+            byte = handle.read(1)[0]
+            
+            #End of line, fill with empty and go to next line !
+            if byte == 0:
+                break
+            elif byte == 1:
+                px = handle.read(1)[0]
+                row += background * px
+                x += px
+            elif (byte & 1) == 0:
+                length = byte >> 1
                 clr = palette[handle.read(1)[0]]
-                row += clr
-
+                row += clr * length
+                x += (length)
+            else:
+                length = byte >> 1
+                for i in range(length):
+                    row += palette[handle.read(1)[0]]
+                x += length
+        #On new lines
+        #Small Workaround to avoid overflow
+        if (PerLine - len(row)) > 0 :
+            row += background * (PerLine - len(row)>>2)
+        row = row[:PerLine]
+        pixels.append(pad_left + row + pad_right)
+        y += 1
+        
     while ( y < height ):
-            pixels.append(pad_row)
-            y+=1
+        pixels.append(pad_row)
+        y += 1
             
     fout = open(filename, 'wb')
     w = png.Writer(width=width, height=height, bitdepth=8, alpha=True)

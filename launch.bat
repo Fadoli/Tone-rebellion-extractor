@@ -1,3 +1,3 @@
-py shape.py island14.shp
+py shape.py *
 
 pause
